@@ -1,1 +1,0 @@
-import{a5 as n,a6 as c,E as l,i as f}from"./VkmC_J90.js";const o="modal";function p(r){const t=n(),u=c(),s=l(t.query[o]===r);return f(s,a=>{const e={...t.query};a?e[o]=r:delete e[o],u.replace({query:e})}),s}export{p as u};
