@@ -70,6 +70,7 @@ const form = reactive({
 const tagInput = ref('')
 const annotationEntries = ref<{ key: string; value: string }[]>([])
 const showAnnotations = ref(false)
+const showAdvancedFields = ref(false)
 
 // ── Pending reminders (added before the habit exists in the DB) ─────────────
 const pendingReminders = ref<{ time: string; days: number[] }[]>([])
@@ -214,6 +215,7 @@ function closeModal() {
   tagInput.value = ''
   annotationEntries.value = []
   showAnnotations.value = false
+  showAdvancedFields.value = false
   form.show_due_time = false
   form.due_time = ''
   pendingReminders.value = []
@@ -369,8 +371,8 @@ onMounted(loadHabits)
             <UInput v-model="form.description" placeholder="Optional description" />
           </UFormField>
 
-          <!-- Tags -->
-          <UFormField label="Tags">
+          <!-- Tags (visible when enabled; otherwise inside Advanced) -->
+          <UFormField v-if="settings.showTagsOnHabits" label="Tags">
             <div class="space-y-2">
               <div v-if="form.tags.length" class="flex flex-wrap gap-1">
                 <span
@@ -479,8 +481,8 @@ onMounted(loadHabits)
             </div>
           </div>
 
-          <!-- Annotations (collapsible) -->
-          <div>
+          <!-- Annotations (collapsible, visible when enabled; otherwise inside Advanced) -->
+          <div v-if="settings.showAnnotationsOnHabits">
             <button
               class="text-xs text-(--ui-text-dimmed) hover:text-(--ui-text-muted) flex items-center gap-1"
               @click="showAnnotations = !showAnnotations"
@@ -500,6 +502,56 @@ onMounted(loadHabits)
               <button class="text-xs text-(--ui-text-dimmed) hover:text-(--ui-text-muted) flex items-center gap-1" @click="addAnnotationEntry">
                 <UIcon name="i-heroicons-plus" class="w-3 h-3" /> Add annotation
               </button>
+            </div>
+          </div>
+
+          <!-- Advanced disclosure: contains fields hidden by microfeature settings -->
+          <div v-if="!settings.showTagsOnHabits || !settings.showAnnotationsOnHabits">
+            <button
+              class="text-xs text-(--ui-text-dimmed) hover:text-(--ui-text-muted) flex items-center gap-1"
+              @click="showAdvancedFields = !showAdvancedFields"
+            >
+              <UIcon :name="showAdvancedFields ? 'i-heroicons-chevron-down' : 'i-heroicons-chevron-right'" class="w-3.5 h-3.5" />
+              Advanced
+            </button>
+            <div v-if="showAdvancedFields" class="mt-2 space-y-3">
+              <UFormField v-if="!settings.showTagsOnHabits" label="Tags">
+                <div class="space-y-2">
+                  <div v-if="form.tags.length" class="flex flex-wrap gap-1">
+                    <span
+                      v-for="tag in form.tags"
+                      :key="tag"
+                      class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-(--ui-bg-elevated) border border-(--ui-border-accented) text-xs text-(--ui-text-toned)"
+                    >
+                      {{ tag }}
+                      <button class="text-(--ui-text-dimmed) hover:text-white leading-none" @click="removeTag(tag)">×</button>
+                    </span>
+                  </div>
+                  <UInput v-model="tagInput" placeholder="Add tag, press Enter" @keydown="onTagKeydown" />
+                </div>
+              </UFormField>
+              <div v-if="!settings.showAnnotationsOnHabits">
+                <button
+                  class="text-xs text-(--ui-text-dimmed) hover:text-(--ui-text-muted) flex items-center gap-1"
+                  @click="showAnnotations = !showAnnotations"
+                >
+                  <UIcon :name="showAnnotations ? 'i-heroicons-chevron-down' : 'i-heroicons-chevron-right'" class="w-3.5 h-3.5" />
+                  {{ showAnnotations ? 'Hide annotations' : annotationEntries.length > 0 ? `Annotations (${annotationEntries.length})` : 'Add annotations' }}
+                </button>
+                <div v-if="showAnnotations" class="mt-2 space-y-1.5">
+                  <div v-for="(entry, i) in annotationEntries" :key="i" class="flex items-center gap-1.5">
+                    <UInput v-model="entry.key" placeholder="key" class="w-24 shrink-0" />
+                    <span class="text-slate-600 text-xs">:</span>
+                    <UInput v-model="entry.value" placeholder="value" class="flex-1" />
+                    <button class="p-2 -m-1 text-slate-700 hover:text-red-400 transition-colors" @click="removeAnnotationEntry(i)">
+                      <UIcon name="i-heroicons-x-mark" class="w-4 h-4" />
+                    </button>
+                  </div>
+                  <button class="text-xs text-(--ui-text-dimmed) hover:text-(--ui-text-muted) flex items-center gap-1" @click="addAnnotationEntry">
+                    <UIcon name="i-heroicons-plus" class="w-3 h-3" /> Add annotation
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
 

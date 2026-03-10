@@ -21,8 +21,6 @@ function setTheme(theme: AppTheme) {
 
 // ── Tab order ───────────────────────────────────────────────────────────────
 
-
-
 function isNavEnabled(item: NavItem): boolean {
   if (item.today && !appSettings.value.enableToday) return false
   if (item.health && !appSettings.value.enableHealth) return false
@@ -53,7 +51,10 @@ const tabOrderContainerRef = ref<HTMLElement | null>(null)
 const { onPointerDown } = useDragReorder(
   orderedNavItems,
   (newOrder) => {
-    setAppSetting('tabOrder', newOrder.map((i) => i.to))
+    setAppSetting(
+      'tabOrder',
+      newOrder.map((i) => i.to),
+    )
   },
   { orientation: 'vertical' },
 )
@@ -62,6 +63,29 @@ const hasCustomOrder = computed(() => appSettings.value.tabOrder.length > 0)
 
 function resetTabOrder() {
   setAppSetting('tabOrder', [])
+}
+
+// ── Microfeatures ────────────────────────────────────────────────────────────
+const anyMicrofeatureOn = computed(
+  () =>
+    appSettings.value.showTagsOnHabits ||
+    appSettings.value.showAnnotationsOnHabits ||
+    appSettings.value.enableContextFilter,
+)
+
+const microExpanded = ref(false)
+onMounted(() => {
+  microExpanded.value = anyMicrofeatureOn.value
+})
+
+function setTags(val: boolean) {
+  setAppSetting('showTagsOnToday', val)
+  setAppSetting('showTagsOnHabits', val)
+}
+
+function setAnnotations(val: boolean) {
+  setAppSetting('showAnnotationsOnToday', val)
+  setAppSetting('showAnnotationsOnHabits', val)
 }
 </script>
 
@@ -265,59 +289,58 @@ function resetTabOrder() {
     </section>
 
     <section class="space-y-2">
-      <p class="text-xs font-semibold uppercase tracking-wider text-(--ui-text-dimmed) px-1">Habits page</p>
+      <p class="text-xs font-semibold uppercase tracking-wider text-(--ui-text-dimmed) px-1">Microfeatures</p>
       <UCard :ui="{ root: 'rounded-2xl', body: 'p-0 sm:p-0 divide-y divide-slate-800' }">
 
-        <div class="flex items-center justify-between px-4 py-3">
-          <div class="space-y-0.5">
-            <p class="text-sm font-medium">Show tags</p>
-            <p class="text-xs text-(--ui-text-dimmed)">Display habit tags in the habits list.</p>
-          </div>
-          <USwitch
-            :model-value="appSettings.showTagsOnHabits"
-            @update:model-value="setAppSetting('showTagsOnHabits', $event)"
+        <!-- Collapsible header -->
+        <button
+          class="flex items-center justify-between w-full px-4 py-3 text-left"
+          @click="microExpanded = !microExpanded"
+        >
+          <span class="text-sm font-medium">Advanced display options</span>
+          <UIcon
+            :name="microExpanded ? 'i-heroicons-chevron-up' : 'i-heroicons-chevron-down'"
+            class="w-4 h-4 text-(--ui-text-muted) transition-transform"
           />
-        </div>
+        </button>
 
-        <div class="flex items-center justify-between px-4 py-3">
-          <div class="space-y-0.5">
-            <p class="text-sm font-medium">Show annotations</p>
-            <p class="text-xs text-(--ui-text-dimmed)">Display key:value metadata in the habits list.</p>
+        <template v-if="microExpanded">
+          <!-- Show tags (today + habits) -->
+          <div class="flex items-center justify-between px-4 py-3.5">
+            <div class="space-y-0.5">
+              <p class="text-sm font-medium">Show tags</p>
+              <p class="text-xs text-(--ui-text-dimmed)">Display habit tags on the Today view and in the habits list.</p>
+            </div>
+            <USwitch
+              :model-value="appSettings.showTagsOnHabits"
+              @update:model-value="setTags($event)"
+            />
           </div>
-          <USwitch
-            :model-value="appSettings.showAnnotationsOnHabits"
-            @update:model-value="setAppSetting('showAnnotationsOnHabits', $event)"
-          />
-        </div>
 
-      </UCard>
-    </section>
-
-    <section class="space-y-2">
-      <p class="text-xs font-semibold uppercase tracking-wider text-(--ui-text-dimmed) px-1">Today page</p>
-      <UCard :ui="{ root: 'rounded-2xl', body: 'p-0 sm:p-0 divide-y divide-slate-800' }">
-
-        <div class="flex items-center justify-between px-4 py-3">
-          <div class="space-y-0.5">
-            <p class="text-sm font-medium">Show tags</p>
-            <p class="text-xs text-(--ui-text-dimmed)">Display habit tags in today's list.</p>
+          <!-- Show annotations (today + habits) -->
+          <div class="flex items-center justify-between px-4 py-3.5">
+            <div class="space-y-0.5">
+              <p class="text-sm font-medium">Show annotations</p>
+              <p class="text-xs text-(--ui-text-dimmed)">Display key:value metadata on the Today view and in the habits list.</p>
+            </div>
+            <USwitch
+              :model-value="appSettings.showAnnotationsOnHabits"
+              @update:model-value="setAnnotations($event)"
+            />
           </div>
-          <USwitch
-            :model-value="appSettings.showTagsOnToday"
-            @update:model-value="setAppSetting('showTagsOnToday', $event)"
-          />
-        </div>
 
-        <div class="flex items-center justify-between px-4 py-3">
-          <div class="space-y-0.5">
-            <p class="text-sm font-medium">Show annotations</p>
-            <p class="text-xs text-(--ui-text-dimmed)">Display key:value metadata in today's list.</p>
+          <!-- Context filter -->
+          <div class="flex items-center justify-between px-4 py-3.5">
+            <div class="space-y-0.5">
+              <p class="text-sm font-medium">Context filter</p>
+              <p class="text-xs text-(--ui-text-dimmed)">Show a tag filter strip in the header to focus on specific contexts.</p>
+            </div>
+            <USwitch
+              :model-value="appSettings.enableContextFilter"
+              @update:model-value="setAppSetting('enableContextFilter', $event)"
+            />
           </div>
-          <USwitch
-            :model-value="appSettings.showAnnotationsOnToday"
-            @update:model-value="setAppSetting('showAnnotationsOnToday', $event)"
-          />
-        </div>
+        </template>
 
       </UCard>
     </section>
