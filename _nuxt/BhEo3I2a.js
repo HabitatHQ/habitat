@@ -1,0 +1,1 @@
+import{o as t,e,f as n}from"./FxHmVTTh.js";import{_ as c}from"./DlAUqK2U.js";const _={};function r(s,a){const o=n;return t(),e(o,{transition:{name:"slide-up",mode:"out-in"}})}const i=c(_,[["render",r]]);export{i as default};
