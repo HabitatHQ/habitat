@@ -1,0 +1,1 @@
+import"./D8tgnmrB.js";const s=globalThis.setInterval;export{s};
