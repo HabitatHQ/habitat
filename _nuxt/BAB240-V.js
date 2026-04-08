@@ -1,1 +1,0 @@
-import{am as n,an as c,q as l,a3 as f}from"./DzJ4TWb1.js";const o="modal";function q(r){const t=n(),u=c(),s=l(t.query[o]===r);return f(s,a=>{const e={...t.query};a?e[o]=r:delete e[o],u.replace({query:e})}),s}export{q as u};
