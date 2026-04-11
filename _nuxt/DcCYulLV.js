@@ -1,0 +1,1 @@
+import{q as r}from"./DThkqUMp.js";function c(t){const e=r("");function i(){const n=e.value.replace(/,+$/,"").trim();n&&!n.startsWith("habitat-")&&!t.includes(n)&&t.push(n),e.value=""}function a(n){const u=t.indexOf(n);u>=0&&t.splice(u,1)}function o(n){(n.key==="Enter"||n.key===",")&&(n.preventDefault(),i())}return{tagInput:e,addTag:i,removeTag:a,onTagKeydown:o}}export{c as u};
