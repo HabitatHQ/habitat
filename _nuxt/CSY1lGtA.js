@@ -1,1 +1,0 @@
-import{g as a,ar as n,o,c as r,y as c}from"./C2plfChP.js";const l=a({__name:"journal",async setup(s){let e,t;return[e,t]=n(()=>c("/checkin",{replace:!0})),await e,t(),(_,p)=>(o(),r("div"))}});export{l as default};
