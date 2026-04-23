@@ -25,8 +25,6 @@ g['definePageMeta'] = () => {}
 g['useState'] = (_key: string, init?: () => unknown) => ref(init ? init() : null)
 g['useRoute'] = () => ({ query: {}, params: { id: 'test-id' } })
 g['useRouter'] = () => ({ push: vi.fn(), replace: vi.fn() })
-g['useBoolModalQuery'] = () => ref(false)
-g['useModalQuery'] = () => ref(null)
 g['useAppSettings'] = () => ({
   settings: ref({
     todoCalendarView: false,
