@@ -1,1 +1,0 @@
-const a=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],u=["Su","Mo","Tu","We","Th","Fr","Sa"];function c(e){return e.schedule_type==="DAILY"?"Daily":e.schedule_type==="MONTHLY"?"Monthly":!e.days_active||e.days_active.length===0?"Weekly":`Weekly · ${e.days_active.map(n=>a[n]).join(", ")}`}export{u as C,c};
