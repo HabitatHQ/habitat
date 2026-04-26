@@ -1,1 +1,0 @@
-import{s as o}from"./DwqTP8yY.js";function r(u=600){const t=o(!1);let e=null;function l(a){t.value=!1,e=setTimeout(()=>{t.value=!0,a()},u)}function n(){e!==null&&(clearTimeout(e),e=null)}return{start:l,cancel:n,activated:t}}export{r as u};
