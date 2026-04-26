@@ -1,0 +1,1 @@
+import{ah as n,ai as c,s as l,a4 as f}from"./C3koKIT8.js";const o="modal";function p(r){const s=n(),u=c(),t=l(s.query[o]===r);return f(t,a=>{const e={...s.query};a?e[o]=r:delete e[o],u.replace({query:e})}),t}export{p as u};
