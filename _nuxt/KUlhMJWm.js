@@ -1,1 +1,0 @@
-import{g as a,au as n,o,c,z as r}from"./C3koKIT8.js";const l=a({__name:"journal",async setup(s){let e,t;return[e,t]=n(()=>r("/checkin",{replace:!0})),await e,t(),(_,p)=>(o(),c("div"))}});export{l as default};
