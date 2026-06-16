@@ -32,6 +32,9 @@ importers:
       vue:
         specifier: latest
         version: 3.5.28(typescript@5.9.3)
+      vue-qs:
+        specifier: ^0.1.18
+        version: 0.1.18(vue-router@5.0.3(@vue/compiler-sfc@3.5.28)(vue@3.5.28(typescript@5.9.3)))(vue@3.5.28(typescript@5.9.3))
       vue-router:
         specifier: latest
         version: 5.0.3(@vue/compiler-sfc@3.5.28)(vue@3.5.28(typescript@5.9.3))
@@ -5886,6 +5889,16 @@ packages:
 
   vue-devtools-stub@0.1.0:
     resolution: {integrity: sha512-RutnB7X8c5hjq39NceArgXg28WZtZpGc3+J16ljMiYnFhKvd8hITxSWQSQ5bvldxMDU6gG5mkxl1MTQLXckVSQ==}
+
+  vue-qs@0.1.18:
+    resolution: {integrity: sha512-qPkS7TofHtG79lhTA/bnFEYdv3p8HRnLMNM+jPIMahORdYha7EvEYd09b/xlezpvCKBYECH/XBajSTi+B5I8cA==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      vue: ^3.3.0
+      vue-router: ^4.2.0
+    peerDependenciesMeta:
+      vue-router:
+        optional: true
 
   vue-router@4.6.4:
     resolution: {integrity: sha512-Hz9q5sa33Yhduglwz6g9skT8OBPii+4bFn88w6J+J4MfEo4KRRpmiNG/hHHkdbRFlLBOqxN8y8gf2Fb0MTUgVg==}
@@ -12560,6 +12573,12 @@ snapshots:
       vue: 3.5.28(typescript@5.9.3)
 
   vue-devtools-stub@0.1.0: {}
+
+  vue-qs@0.1.18(vue-router@5.0.3(@vue/compiler-sfc@3.5.28)(vue@3.5.28(typescript@5.9.3)))(vue@3.5.28(typescript@5.9.3)):
+    dependencies:
+      vue: 3.5.28(typescript@5.9.3)
+    optionalDependencies:
+      vue-router: 5.0.3(@vue/compiler-sfc@3.5.28)(vue@3.5.28(typescript@5.9.3))
 
   vue-router@4.6.4(vue@3.5.28(typescript@5.9.3)):
     dependencies:

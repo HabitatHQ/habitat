@@ -1,11 +1,18 @@
 <script setup lang="ts">
+import { queryRef } from 'vue-qs'
 import type { HabitWithSchedule } from '~/types/database'
 
 const db = useDatabase()
 const { settings } = useAppSettings()
 const { anyActive, matchesContext } = useContextFilter()
 const habits = ref<HabitWithSchedule[]>([])
-const isOpen = useBoolModalQuery('create')
+const modalParam = queryRef('modal', { defaultValue: '' })
+const isOpen = computed({
+  get: () => modalParam.value === 'create',
+  set: (v: boolean) => {
+    modalParam.value = v ? 'create' : ''
+  },
+})
 const saving = ref(false)
 const scheduleError = ref<string | null>(null)
 const nameError = ref<string | null>(null)

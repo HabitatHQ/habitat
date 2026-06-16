@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { queryRef } from 'vue-qs'
 import type { CheckinTemplate } from '~/types/database'
 import { toLocalDateKey } from '~/utils/format'
 
@@ -51,7 +52,13 @@ function isActiveToday(t: CheckinTemplate): boolean {
 
 // ─── Create template ─────────────────────────────────────────────────────────
 
-const showCreate = useBoolModalQuery('create')
+const modalParam = queryRef('modal', { defaultValue: '' })
+const showCreate = computed({
+  get: () => modalParam.value === 'create',
+  set: (v: boolean) => {
+    modalParam.value = v ? 'create' : ''
+  },
+})
 const creating = ref(false)
 const newTitle = ref('')
 const newTitleError = ref<string | null>(null)

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { QueryCodec } from 'vue-qs'
+import { queryRef } from 'vue-qs'
 import type { TimerMode } from '~/composables/useTimer'
 import type { BoredCategory, Todo } from '~/types/database'
 import { toLocalDateKey } from '~/utils/format'
@@ -83,16 +85,31 @@ const toast = useToast()
 
 const todos = ref<Todo[]>([])
 const boredCategories = ref<BoredCategory[]>([])
-const filter = ref<'all' | 'active' | 'done'>('all')
-const showModal = useBoolModalQuery('add')
+type TodoFilter = 'all' | 'active' | 'done'
+const filterCodec: QueryCodec<TodoFilter> = {
+  parse: (raw) => (raw === 'active' || raw === 'done' ? raw : 'all'),
+  serialize: (val) => (val === 'all' ? null : val),
+}
+const filter = queryRef<TodoFilter>('filter', {
+  defaultValue: 'all',
+  codec: filterCodec,
+})
+
+const modalParam = queryRef('modal', { defaultValue: '' })
+const showModal = computed({
+  get: () => modalParam.value === 'add',
+  set: (v: boolean) => {
+    modalParam.value = v ? 'add' : ''
+  },
+})
+
+const highlight = queryRef('highlight', { defaultValue: '' })
 
 // ── Confirm dialogs ───────────────────────────────────────────────────────────
 const confirmArchiveTodo = ref<Todo | null>(null)
 const confirmDeleteTodo = ref<Todo | null>(null)
 const editingTodo = ref<Todo | null>(null)
 const showDone = ref(false)
-const route = useRoute()
-const highlightedTodoId = ref<string | null>(null)
 
 const form = reactive({
   title: '',
@@ -196,14 +213,12 @@ async function load() {
 
 onMounted(async () => {
   await load()
-  const hid = route.query['highlight']
-  if (typeof hid === 'string' && hid) {
-    highlightedTodoId.value = hid
+  if (highlight.value) {
     await nextTick()
-    const el = document.getElementById(`todo-${hid}`)
+    const el = document.getElementById(`todo-${highlight.value}`)
     el?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
     setTimeout(() => {
-      highlightedTodoId.value = null
+      highlight.value = ''
     }, 2500)
   }
 })
@@ -706,7 +721,7 @@ function jotKindIcon(kind: string | undefined): string {
             :id="`todo-${todo.id}`"
             class="flex items-start gap-3 bg-(--ui-bg-muted) border border-(--ui-border) rounded-xl px-3 py-3 transition-shadow"
             :class="[
-              highlightedTodoId === todo.id ? 'ring-2 ring-primary-500 ring-offset-1 ring-offset-(--ui-bg)' : '',
+              highlight === todo.id ? 'ring-2 ring-primary-500 ring-offset-1 ring-offset-(--ui-bg)' : '',
               anyActive && !matchesContext(todo.tags) ? 'opacity-40' : '',
             ]"
           >

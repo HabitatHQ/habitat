@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { queryRef } from 'vue-qs'
 import type { BoredActivity, BoredCategory } from '~/types/database'
 import {
   buildActivityPayload,
@@ -12,8 +13,19 @@ const toast = useToast()
 const categories = ref<BoredCategory[]>([])
 const activities = ref<BoredActivity[]>([])
 
-const showCategoryModal = useBoolModalQuery('add-category')
-const showActivityModal = useBoolModalQuery('add-activity')
+const modalParam = queryRef('modal', { defaultValue: '' })
+const showCategoryModal = computed({
+  get: () => modalParam.value === 'add-category',
+  set: (v: boolean) => {
+    modalParam.value = v ? 'add-category' : ''
+  },
+})
+const showActivityModal = computed({
+  get: () => modalParam.value === 'add-activity',
+  set: (v: boolean) => {
+    modalParam.value = v ? 'add-activity' : ''
+  },
+})
 const editingCategory = ref<BoredCategory | null>(null)
 const editingActivity = ref<BoredActivity | null>(null)
 const activityCategoryId = ref<string>('')
